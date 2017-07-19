@@ -6,7 +6,6 @@
  * @copyright   Copyright (c) 2017 Divante Ltd. (https://divante.co)
  */
 
-
 /**
  * Class GoogleLogin_IndexController
  *
@@ -17,8 +16,15 @@
 class GoogleLogin_IndexController extends \Pimcore\Controller\Action
 {
 
+    /** @var Zend_Config */
     protected $config;
 
+    /**
+     * GoogleLogin_IndexController constructor.
+     * @param Zend_Controller_Request_Abstract $request
+     * @param Zend_Controller_Response_Abstract $response
+     * @param array $invokeArgs
+     */
     public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {
         $configHelper = new \GoogleLogin\Helper\Config();
@@ -42,6 +48,9 @@ class GoogleLogin_IndexController extends \Pimcore\Controller\Action
         return $provider;
     }
 
+    /**
+     * @param string $email
+     */
     protected function loginUser(string $email)
     {
         $user = \Pimcore\Model\User::getByName($email, 1);
@@ -63,6 +72,9 @@ class GoogleLogin_IndexController extends \Pimcore\Controller\Action
         }
     }
 
+    /**
+     * IndexAction - gets auth data from Google and lets user in
+     */
     public function indexAction()
     {
         $provider = $this->getProvider();
