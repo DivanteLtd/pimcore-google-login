@@ -25,7 +25,9 @@ class GoogleLogin_IndexController extends \Pimcore\Controller\Action
      * @param Zend_Controller_Response_Abstract $response
      * @param array $invokeArgs
      */
-    public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
+    public function __construct(Zend_Controller_Request_Abstract $request,
+                                Zend_Controller_Response_Abstract $response,
+                                array $invokeArgs = array())
     {
         $configHelper = new \GoogleLogin\Helper\Config();
         $this->config = $configHelper->getConfig();
@@ -54,13 +56,13 @@ class GoogleLogin_IndexController extends \Pimcore\Controller\Action
     protected function loginUser(string $email)
     {
         $user = \Pimcore\Model\User::getByName($email, 1);
-        if(!$user) {
+        if (!$user) {
             $user = new \Pimcore\Model\User\Listing();
             $user->setCondition("email = ?", $email);
             $user->load();
             $user = $user->getUsers()[0];
         }
-        if($user && $user->isActive()) {
+        if ($user && $user->isActive()) {
             /** Log in user */
             Pimcore\Tool\Session::useSession(function ($adminSession) use ($user) {
                 $adminSession->user = $user;
@@ -80,24 +82,19 @@ class GoogleLogin_IndexController extends \Pimcore\Controller\Action
         $provider = $this->getProvider();
 
         if ($this->getParam('error')) {
-
             // Got an error, probably user denied access
             $this->redirect("/admin/?auth_failed=true&reason=access_denied");
-
         } elseif (!$this->getParam('code')) {
-
             // If we don't have an authorization code then get one
             $authUrl = $provider->getAuthorizationUrl();
             $_SESSION['oauth2state'] = $provider->getState();
             header('Location: ' . $authUrl);
             exit;
-
         } else {
-
             // Try to get an access token (using the authorization code grant)
             try {
                 $token = $provider->getAccessToken('authorization_code', [
-                    'code' => $_GET['code']
+                    'code' => $this->getParam('code')
                 ]);
             } catch (Exception $e) {
                 $this->redirect("/admin/login/?auth_failed=true&reason=bad_token");
@@ -105,7 +102,6 @@ class GoogleLogin_IndexController extends \Pimcore\Controller\Action
 
             // Now you have a token you can look up a users profile data
             try {
-
                 // We got an access token, let's now get the owner details
                 /** @var \League\OAuth2\Client\Provider\GenericResourceOwner $ownerDetails */
                 $ownerDetails = $provider->getResourceOwner($token);
@@ -116,7 +112,6 @@ class GoogleLogin_IndexController extends \Pimcore\Controller\Action
                 if($domain == $this->config->hostedDomain) {
                     $this->loginUser($email);
                 }
-
             } catch (Exception $e) {
                 // Failed to get user details
                 exit('Something went wrong: ' . $e->getMessage());

@@ -39,18 +39,16 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     }
 
     /**
-     * No install needed
      * @return bool
      */
     public static function install()
     {
         $configHelper = new Config();
         if (!$configHelper->verifyConfig()) {
-            return "This plugin is not yes configured!";
+            return "This plugin is not yet configured!";
         }
 
         return true;
-
     }
 
     /**
