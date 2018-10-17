@@ -1,5 +1,5 @@
-# Pimcore Google Login
-Pimcore plugin that allows to use Google credentials to log into Pimcore's admin panel
+# Pimcore 4 Google Login
+Pimcore 4 plugin that allows to use Google credentials to log into Pimcore's admin panel
 # Features
   - Log into Pimcore's admin panel using your Google account (and two-step verification!)
 # Installation
